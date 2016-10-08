@@ -29,8 +29,7 @@
     "test": "test"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alexUXUI/twitter-widget-poc.git"
+    "type": "git"
   },
   "keywords": [
     "twitter",

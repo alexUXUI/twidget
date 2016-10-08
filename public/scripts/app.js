@@ -1,10 +1,7 @@
-/*
+/**
  * @author Alex Bennett
- *
  * @license MIT
- *
  * @version 0.0.1
- *
  */
 
 'use strict'
@@ -16,12 +13,10 @@ const config = {
   secrect: process.env.SECRET
 }
 
-/*
+/**
  * Create new instance of codebird API and uses it to query
  * the twitter API
- *
  * @param config object
- *
  * @return promise of user tweets
  */
 
@@ -36,14 +31,11 @@ function getTweets(searchTerm) {
   })
 }
 
-/*
+/**
  * Grabs the value of the input form
  * and uses that value to query the user search endpoint
- *
- * @input promise of user tweets
- *
+ * @param promise of user tweets
  * @return void
- *
  */
 
 $(`#search`).click((userEvent) => {
