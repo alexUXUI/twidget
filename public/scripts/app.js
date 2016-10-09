@@ -8,9 +8,24 @@
 
 const dotenv = require('dotenv').load()
 
+const cb = new Codebird
+
 const config = {
   name: process.env.NAME,
   secrect: process.env.SECRET
+}
+
+const searchConfig = [
+  `statuses_userTimeline`,
+  `screen_name=`
+]
+
+const [timeline, user] = searchConfig
+
+const domAPI = {
+  searchBtn: $(`#search`),
+  tweetContainer: $(`.tweets`),
+  queryInput: $(`#input`)
 }
 
 /**
@@ -21,13 +36,10 @@ const config = {
  */
 
 function getTweets(searchTerm) {
-
-  let cb = new Codebird
   cb.setConsumerKey(config.name, config.secrect)
-  let searchItem = document.getElementById(`input`).value
-
+  let searchItem = domAPI.queryInput.value
   return new Promise ((resolve, reject) => {
-    cb.__call(`statuses_userTimeline`, `screen_name=` + searchItem, (reply) => resolve(reply))
+    cb.__call(timeline, user + searchItem, (reply) => resolve(reply))
   })
 }
 
@@ -38,33 +50,43 @@ function getTweets(searchTerm) {
  * @return void
  */
 
-$(`#search`).click((userEvent) => {
-
+domAPI.searchBtn.click((userEvent) => {
   userEvent.preventDefault()
-  $(`.tweets`).empty()
-
+  domAPI.tweetContainer.empty()
   return (() => {
     getTweets().then((data) => {
-      console.log('yo data: ', data);
       data.forEach((tweet, index) => {
-        // if(tweet.entities.hashtags[0]) {
-          $(`.tweets`).append(`
-            <li class="list-group-item">
-              <p>${ tweet.text }</p>
-              <hr>
-              <div class='entities'>
-                <p><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>  ${ tweet.retweet_count }</p>
-                <p>${ tweet.created_at }</p>
-                <p><span class=""><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></span> ${ tweet.favorite_count }</p>
-              </div>
-            </li>`
-          )
-        // } else {
-// <p>#${ tweet.entities.hashtags[0].text }</p>
-          // do something else?
-
-        // }
+        displayTweet(tweet)
       })
     })
   }).call(config)
 })
+
+/**
+ * Pulls the tweet content out of response object
+ * prints it to the DOM
+ * @param promise of user tweets
+ * @return void
+ */
+
+function displayTweet(tweet){
+  domAPI.tweetContainer.append(`
+    <li class="list-group-item">
+      <p>${ tweet.text }</p>
+      <hr>
+      <div class='entities'>
+        <p>
+          <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+          ${ tweet.retweet_count }
+        </p>
+        <p>${ tweet.created_at }</p>
+        <p>
+          <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+          ${ tweet.favorite_count }
+        </p>
+      </div>
+    </li>`
+  )
+}
+
+// <p>#${ tweet.entities.hashtags[0].text }</p>
