@@ -1,0 +1,38 @@
+ul {
+  list-style: none;
+}
+
+li {
+  list-style: none;
+}
+
+.panel {
+  border: 1px solid white;
+}
+
+.entities {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 30px;
+  border: 1px solid white;
+}
+
+.entities  p {
+  color: lightgray;
+  font-size: 10px;
+}
+
+.entities  span {
+  color: lightgray;
+  font-size: 10px;
+}
+
+p {
+  font-size: 18px;
+  font-weight: 200;
+}
+
+.list-group-item {
+  padding-top: 20px;
+}

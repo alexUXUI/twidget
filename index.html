@@ -4,32 +4,29 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Twitter Search</title>
+    <title>Twitter User Timeline Search</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./public/styles/style.css" media="screen" title="no title">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
   <body>
     <div class="container well">
-      <h1>Twitter User</h1>
-      <h2>Timeline Finder</h2>
+      <h1>Twitter User Timeline Finder</h1>
       <hr>
-      <form class="" action="" method="">
+      <form>
         <div class="form-group">
           <label for="">User Search</label>
-          <input type="text" class="form-control" id="input" placeholder="" name="query" class="search-term">
+          <div class="input-group">
+            <input required type="text" class="form-control" id="input" name="query" class="search-term">
+            <span class="input-group-btn">
+              <button class="btn btn-primary" id="search" type="button">Get User's Tweets</button>
+            </span>
+          </div>
         </div>
-        <button id="search" class="btn btn-primary" type="button" name="name" value="">Get User's Tweets</button>
       </form>
       <hr>
-      <div class="well">
-        <ul class="tweets"></ul>
+      <div class="">
+        <ul class="tweets list-group"></ul>
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
