@@ -6,22 +6,28 @@
 
 'use strict'
 
+/* environment variable handler */
 const dotenv = require('dotenv').load()
 
+/* library that abstracts communication with twitter */
 const cb = new Codebird
 
+/* twitter credentials */
 const config = {
   name: process.env.NAME,
   secrect: process.env.SECRET
 }
 
+/* request object for twitter API */
 const searchConfig = [
   `statuses_userTimeline`,
   `screen_name=`
 ]
 
+/* destructures request obj */
 const [timeline, user] = searchConfig
 
+/* cached set of DOM elements for easy access */
 const domAPI = {
   searchBtn: $(`#search`),
   tweetContainer: $(`.tweets`),
@@ -29,23 +35,28 @@ const domAPI = {
 }
 
 /**
- * Create new instance of codebird API and uses it to query
- * the twitter API
+ * Passes credentials to codebird. Grabs the value
+ * of the input form and uses that to query the user
+ * search endpoint, which returns a promise of tweets.
+ *
  * @param config object
  * @return promise of user tweets
  */
 
 function getTweets(searchTerm) {
   cb.setConsumerKey(config.name, config.secrect)
-  let searchItem = domAPI.queryInput.value
+  let searchItem = document.getElementById(`input`).value
   return new Promise ((resolve, reject) => {
     cb.__call(timeline, user + searchItem, (reply) => resolve(reply))
   })
 }
 
 /**
- * Grabs the value of the input form
- * and uses that value to query the user search endpoint
+ * On click seach btn, the getTweets function is called,
+ * and the promise object is then passed to the displayTweet
+ * function, which calls  displayTweet on each user
+ * tweet, printing all of the users tweets to the DOM.
+ *
  * @param promise of user tweets
  * @return void
  */
@@ -63,8 +74,9 @@ domAPI.searchBtn.click((userEvent) => {
 })
 
 /**
- * Pulls the tweet content out of response object
- * prints it to the DOM
+ * Pulls the content out of twitter
+ * response and prints it to the DOM.
+ *
  * @param promise of user tweets
  * @return void
  */
@@ -88,5 +100,3 @@ function displayTweet(tweet){
     </li>`
   )
 }
-
-// <p>#${ tweet.entities.hashtags[0].text }</p>
