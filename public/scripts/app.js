@@ -45,8 +45,25 @@ $(`#search`).click((userEvent) => {
 
   return (() => {
     getTweets().then((data) => {
+      console.log('yo data: ', data);
       data.forEach((tweet, index) => {
-        $(`.tweets`).append(`<li> ${ tweet.text } </li>`)
+        // if(tweet.entities.hashtags[0]) {
+          $(`.tweets`).append(`
+            <li class="list-group-item">
+              <p>${ tweet.text }</p>
+              <hr>
+              <div class='entities'>
+                <p><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>  ${ tweet.retweet_count }</p>
+                <p>${ tweet.created_at }</p>
+                <p><span class=""><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></span> ${ tweet.favorite_count }</p>
+              </div>
+            </li>`
+          )
+        // } else {
+// <p>#${ tweet.entities.hashtags[0].text }</p>
+          // do something else?
+
+        // }
       })
     })
   }).call(config)
