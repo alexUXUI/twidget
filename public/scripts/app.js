@@ -47,7 +47,28 @@ function getTweets(searchTerm) {
   cb.setConsumerKey(config.name, config.secrect)
   let searchItem = document.getElementById(`input`).value
   return new Promise ((resolve, reject) => {
-    cb.__call(timeline, user + searchItem, (reply) => resolve(reply))
+    cb.__call(timeline, user + searchItem, function(reply){
+
+      var withMedia = []
+      var withoutMedia = []
+
+      var total = {
+        with: withMedia,
+        without: withMedia
+      }
+
+      console.log('yo reply', reply);
+      reply.forEach(function(tweet, index){
+        if(tweet.entities.media[0].media_url === undefined){
+          console.log('theres not an IMAGE :()');
+          withoutMedia.push(tweet)
+        } else {
+          console.log('there is an image?');
+          withMedia.push(tweet)
+        }
+      })
+      resolve(reply)
+    })
   })
 }
 
@@ -66,6 +87,7 @@ domAPI.searchBtn.click((userEvent) => {
   domAPI.tweetContainer.empty()
   return (() => {
     getTweets().then((data) => {
+      console.log('tweets: ', data);
       data.forEach((tweet, index) => {
         displayTweet(tweet)
       })
@@ -82,9 +104,11 @@ domAPI.searchBtn.click((userEvent) => {
  */
 
 function displayTweet(tweet){
+
   domAPI.tweetContainer.append(`
     <li class="list-group-item">
       <p>${ tweet.text }</p>
+      <img src="${ tweet.entities.media[0].media_url }" />
       <hr>
       <div class='entities'>
         <p>
