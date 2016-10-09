@@ -6,65 +6,97 @@
 
 'use strict'
 
+/* environment variable handler */
 const dotenv = require('dotenv').load()
 
+/* library that abstracts communication with twitter */
+const cb = new Codebird
+
+/* twitter credentials */
 const config = {
   name: process.env.NAME,
   secrect: process.env.SECRET
 }
 
+/* request object for twitter API */
+const searchConfig = [
+  `statuses_userTimeline`,
+  `screen_name=`
+]
+
+/* destructures request obj */
+const [timeline, user] = searchConfig
+
+/* cached set of DOM elements for easy access */
+const domAPI = {
+  searchBtn: $(`#search`),
+  tweetContainer: $(`.tweets`),
+  queryInput: $(`#input`)
+}
+
 /**
- * Create new instance of codebird API and uses it to query
- * the twitter API
+ * Passes credentials to codebird. Grabs the value
+ * of the input form and uses that to query the user
+ * search endpoint, which returns a promise of tweets.
+ *
  * @param config object
  * @return promise of user tweets
  */
 
 function getTweets(searchTerm) {
-
-  let cb = new Codebird
   cb.setConsumerKey(config.name, config.secrect)
   let searchItem = document.getElementById(`input`).value
-
   return new Promise ((resolve, reject) => {
-    cb.__call(`statuses_userTimeline`, `screen_name=` + searchItem, (reply) => resolve(reply))
+    cb.__call(timeline, user + searchItem, (reply) => resolve(reply))
   })
 }
 
 /**
- * Grabs the value of the input form
- * and uses that value to query the user search endpoint
+ * On click seach btn, the getTweets function is called,
+ * and the promise object is then passed to the displayTweet
+ * function, which calls  displayTweet on each user
+ * tweet, printing all of the users tweets to the DOM.
+ *
  * @param promise of user tweets
  * @return void
  */
 
-$(`#search`).click((userEvent) => {
-
+domAPI.searchBtn.click((userEvent) => {
   userEvent.preventDefault()
-  $(`.tweets`).empty()
-
+  domAPI.tweetContainer.empty()
   return (() => {
     getTweets().then((data) => {
-      console.log('yo data: ', data);
       data.forEach((tweet, index) => {
-        // if(tweet.entities.hashtags[0]) {
-          $(`.tweets`).append(`
-            <li class="list-group-item">
-              <p>${ tweet.text }</p>
-              <hr>
-              <div class='entities'>
-                <p><span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>  ${ tweet.retweet_count }</p>
-                <p>${ tweet.created_at }</p>
-                <p><span class=""><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></span> ${ tweet.favorite_count }</p>
-              </div>
-            </li>`
-          )
-        // } else {
-// <p>#${ tweet.entities.hashtags[0].text }</p>
-          // do something else?
-
-        // }
+        displayTweet(tweet)
       })
     })
   }).call(config)
 })
+
+/**
+ * Pulls the content out of twitter
+ * response and prints it to the DOM.
+ *
+ * @param promise of user tweets
+ * @return void
+ */
+
+function displayTweet(tweet){
+  domAPI.tweetContainer.append(`
+    <li class="list-group-item">
+      <p>${ tweet.text }</p>
+      <hr>
+      <div class='entities'>
+        <p>
+          <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+          ${ tweet.retweet_count }
+        </p>
+        <p>${ tweet.created_at }</p>
+        <p>
+          <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+          ${ tweet.favorite_count }
+        </p>
+      </div>
+    </li>`
+  )
+}
